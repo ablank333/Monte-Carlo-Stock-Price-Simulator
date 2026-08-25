@@ -48,9 +48,9 @@ public class HistoricalDataLoader {
 
         JsonObject timeSeries = root.getAsJsonObject("Time Series (Daily)");
 
-        if (timeSeries == null){
-            throw new RuntimeException("No data found for this ticker. " +
-                    "It may be invalid, or the API rate limit may have been reached.");
+        if (timeSeries == null) {
+            System.out.println("Alpha Vantage raw response: " + json);
+            throw new RuntimeException("No data found for this ticker. It may be invalid, or the API rate limit may have been reached.");
         }
         // TreeMap keeps entries sorted by key (date) automatically
         TreeMap<String, Double> sortedPrices = new TreeMap<>();
