@@ -55,34 +55,3 @@ where Z is a random draw from a standard normal distribution. The app estimates 
 ### Notes on the free API tier
 
 Alpha Vantage's free tier is limited to 25 requests/day, 5/min, and caps historical lookback at 100 days (outputsize=compact). If you see a rate-limit-related error, wait and try again later - Alpha Vantage doesn't officially document the reset window, but it behaves like a rolling ~24 hour window.
-
-## Project Structure
-
-Monte-Carlo-Stock-Price-Simulator/
-├── src/
-│   ├── Main.java                  (console version - still works, standalone)
-│   ├── Server.java                (Javalin web server - primary entry point)
-│   ├── Stock.java
-│   ├── RandomGenerator.java
-│   ├── Simulator.java
-│   ├── Statistics.java
-│   ├── HistoricalDataLoader.java
-│   ├── SimulationResponse.java
-│   ├── ErrorResponse.java
-│   └── public/
-│       └── index.html             (frontend UI)
-├── out/                           (build output, gitignored)
-
-Note: the public/ folder must live inside src/, not at the project root, for Javalin's static file serving to find it.
-
-## Screenshots
-
-Add a screenshot of the running app here once available.
-
-## Status
-
-Core functionality is complete and working end-to-end. Remaining work is polish, deployment, and documentation - see the project's technical handoff notes for full details on outstanding items.
-
-## License
-
-Add a license if you plan to make this public (MIT is a common choice for portfolio projects).
