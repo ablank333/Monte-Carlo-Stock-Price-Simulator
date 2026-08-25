@@ -21,7 +21,7 @@ The core math is Geometric Brownian Motion:
 
 $$S(t+dt) = S(t) \cdot \exp\left[\left(\mu - \frac{1}{2}\sigma^2\right)dt + \sigma\sqrt{dt} \cdot Z\right]$$
 
-where Z is a random draw from a standard normal distribution. The app estimates mu and sigma from real historical log returns (not simple returns, since log returns are additive across time and match GBM's assumptions), then runs 10,000 independent one-year paths forward to build a distribution of possible future prices.
+where $Z$ is a random draw from a standard normal distribution, $\mu$ is the annualized expected return, and $\sigma$ is the annualized volatility. The app estimates $\mu$ and $\sigma$ from real historical log returns (not simple returns, since log returns are additive across time and match GBM's assumptions), then runs 10,000 independent one-year paths forward to build a distribution of possible future prices.
 
 ## Running Locally
 
