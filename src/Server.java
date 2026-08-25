@@ -47,6 +47,7 @@ public class Server {
 
             ctx.json(response);
           } catch (Exception e) {
+            e.printStackTrace();
             ctx.status(500);
             ctx.json(new ErrorResponse(e.getMessage()));
           }
