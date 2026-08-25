@@ -4,8 +4,11 @@ public class Server {
     public static void main(String[] args) {
 
         // creates and starts a web server listening on port 8080
-        Javalin app = Javalin.create(config ->
-        {config.staticFiles.add("/public");}).start(8080);
+      String portEnv = System.getenv("PORT");
+      int port = (portEnv != null) ? Integer.parseInt(portEnv) : 8080;
+
+      Javalin app = Javalin.create(config ->
+      {config.staticFiles.add("/public");}).start(port);
 
         app.get("/simulate", ctx -> {
           String ticker = ctx.queryParam("ticker");
