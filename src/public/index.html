@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monte Carlo Stock Simulator</title>
+    <style>
+        body{
+            font-family: -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #1a1a1a;
+        }
+        h1 {
+        font-size: 24px;
+        }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Monte Carlo Stock Price Simulator</h1>
+
+    <div class="input-row">
+        <input type="text" id="tickerInput" placeholder="Enter ticker, e.g. AAPL">
+        <button id="submitButton">Simulate</button>
+    </div>
+
+    <div id="results"></div>
+
+    <canvas id="histogram" width="560" height="300"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function() {
+
+            const ticker = document.getElementById("tickerInput").value;
+
+            if (!ticker) {
+                document.getElementById("results").innerHTML = `<p style="color: red;">Please enter a ticker.</p>`;
+                return;
+            }
+
+            // show loading state
+            document.getElementById("results").innerHTML = '<p>Simulating...</p>';
+
+            fetch(`/simulate?ticker=${ticker}`)
+                .then(response => {
+                    if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
+                }
+                return response.json();
+            })
+
+            .then(data => {
+
+                    // display the stats
+                    document.getElementById("results").innerHTML = `
+                        <div class="stat-row"><span>Ticker</span><span>${data.ticker}</span></div>
+                        <div class="stat-row"><span>Current Price</span><span>$${data.initialPrice.toFixed(2)}</span></div>
+                        <div class="stat-row"><span>Expected Price (1yr)</span><span>$${data.meanPrice.toFixed(2)}</span></div>
+                        <div class="stat-row"><span>Median Price</span><span>$${data.medianPrice.toFixed(2)}</span></div>
+                        <div class="stat-row"><span>5th Percentile</span><span>$${data.fifthPercentile.toFixed(2)}</span></div>
+                        <div class="stat-row"><span>95th Percentile</span><span>$${data.ninetyFifthPercentile.toFixed(2)}</span></div>
+                        <div class="stat-row"><span>Probability of Gain</span><span>${(data.probabilityOfGain * 100).toFixed(1)}%</span></div>
+                        <div class="stat-row"><span>95% VaR</span><span>$${data.valueAtRisk.toFixed(2)}</span></div>
+                    `;
+
+                    drawHistogram(data.allResults);
+                })
+                .catch(error => {
+                    document.getElementById("results").innerHTML = `<p style="color: red;">${error.message}</p>`;
+                });
+        });
+
+        // keeps track of the existing chart
+        let currentChart = null;
+
+        function drawHistogram(results) {
+            // build simple bins for the histogram
+            const binCount = 30;
+            const min = Math.min(...results);
+            const max = Math.max(...results);
+            const binSize = (max - min) / binCount;
+
+            const bins = new Array(binCount).fill(0);
+            const labels = [];
+
+            for (let i = 0; i < binCount; i++) {
+                labels.push((min + i * binSize).toFixed(0));
+            }
+
+            for (const price of results) {
+                let binIndex = Math.floor((price - min) / binSize);
+                if (binIndex >= binCount) binIndex = binCount - 1;
+                bins[binIndex]++;
+            }
+
+            // destroy previous chart before drawing a new one
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            currentChart = new Chart(document.getElementById("histogram"), {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Simulated Outcomes",
+                        data: bins,
+                        backgroundColor: "#1a1a1a"
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: "Price ($)" },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: "Frequency" },
+                            grid: { display: false }
+                            }
+                    }
+                }
+            });
+        }
+    </script>
+
+
+
+</body>
+</html>
