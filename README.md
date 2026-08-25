@@ -1,7 +1,8 @@
 # Monte Carlo Stock Price Simulator
 
 A full-stack Java web app that simulates a stock's future price using real historical market data and Monte Carlo methods.
-https://monte-carlo-stock-price-simulator.onrender.com/
+
+Link: https://monte-carlo-stock-price-simulator.onrender.com/
 
 Type in a ticker, and the app:
 1. Pulls real historical daily closing prices from the Alpha Vantage API
