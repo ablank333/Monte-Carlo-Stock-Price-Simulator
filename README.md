@@ -19,9 +19,9 @@ Type in a ticker, and the app:
 
 The core math is Geometric Brownian Motion:
 
-S(t+dt) = S(t) * exp[(mu - 0.5*sigma^2)*dt + sigma*sqrt(dt) * Z]
+$$S(t+dt) = S(t) \cdot \exp\left[\left(\mu - \frac{1}{2}\sigma^2\right)dt + \sigma\sqrt{dt} \cdot Z\right]$$
 
-where Z is a random draw from a standard normal distribution. The app estimates mu and sigma from real historical log returns (not simple returns, since log returns are additive across time and match GBM's assumptions), then runs 10,000 independent one-year paths forward to build a distribution of possible future prices.
+where $Z$ is a random draw from a standard normal distribution, $\mu$ is the annualized expected return, and $\sigma$ is the annualized volatility. The app estimates $\mu$ and $\sigma$ from real historical log returns (not simple returns, since log returns are additive across time and match GBM's assumptions), then runs 10,000 independent one-year paths forward to build a distribution of possible future prices.
 
 ## Running Locally
 
@@ -55,34 +55,3 @@ where Z is a random draw from a standard normal distribution. The app estimates 
 ### Notes on the free API tier
 
 Alpha Vantage's free tier is limited to 25 requests/day, 5/min, and caps historical lookback at 100 days (outputsize=compact). If you see a rate-limit-related error, wait and try again later - Alpha Vantage doesn't officially document the reset window, but it behaves like a rolling ~24 hour window.
-
-## Project Structure
-
-Monte-Carlo-Stock-Price-Simulator/
-├── src/
-│   ├── Main.java                  (console version - still works, standalone)
-│   ├── Server.java                (Javalin web server - primary entry point)
-│   ├── Stock.java
-│   ├── RandomGenerator.java
-│   ├── Simulator.java
-│   ├── Statistics.java
-│   ├── HistoricalDataLoader.java
-│   ├── SimulationResponse.java
-│   ├── ErrorResponse.java
-│   └── public/
-│       └── index.html             (frontend UI)
-├── out/                           (build output, gitignored)
-
-Note: the public/ folder must live inside src/, not at the project root, for Javalin's static file serving to find it.
-
-## Screenshots
-
-Add a screenshot of the running app here once available.
-
-## Status
-
-Core functionality is complete and working end-to-end. Remaining work is polish, deployment, and documentation - see the project's technical handoff notes for full details on outstanding items.
-
-## License
-
-Add a license if you plan to make this public (MIT is a common choice for portfolio projects).
